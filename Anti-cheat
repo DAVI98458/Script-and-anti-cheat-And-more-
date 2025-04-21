@@ -1,0 +1,149 @@
+loadstring(game:HttpGet('https://raw.githubusercontent.com/wrestonbest/Helixia-2025/refs/heads/main/MPS/MPS%20Legacy.lua'))()
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+-- GUI principal
+local gui = Instance.new("ScreenGui", PlayerGui)
+gui.Name = "ThiagoMenu"
+gui.ResetOnSpawn = false
+
+-- Botão de abrir/fechar
+local toggle = Instance.new("TextButton", gui)
+toggle.Size = UDim2.new(0, 140, 0, 40)
+toggle.Position = UDim2.new(0, 10, 0, 10)
+toggle.Text = "Abrir Menu"
+toggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+toggle.TextColor3 = Color3.new(1,1,1)
+toggle.Font = Enum.Font.SourceSansBold
+toggle.TextSize = 18
+
+-- Janela principal
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 300, 0, 250)
+frame.Position = UDim2.new(0, 10, 0, 60)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.Visible = false
+
+-- Título
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Text = "Created by @lindao_gojo2(beta)"
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.new(1,1,1)
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 20
+
+-- Anti-Cheat (simulado)
+local anti = Instance.new("TextButton", frame)
+anti.Size = UDim2.new(1, -20, 0, 30)
+anti.Position = UDim2.new(0, 10, 0, 40)
+anti.Text = "Anti-Cheat: ON"
+anti.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+anti.TextColor3 = Color3.new(1,1,1)
+anti.Font = Enum.Font.SourceSans
+anti.TextSize = 16
+anti.MouseButton1Click:Connect(function()
+    setfenv = setfenv or function() end
+    setmetatable = setmetatable or function() end
+    getfenv = getfenv or function() return {} end
+    anti.Text = "Anti-Cheat: Ativado"
+end)
+
+-- ESP
+local espOn = false
+local espButton = Instance.new("TextButton", frame)
+espButton.Size = UDim2.new(1, -20, 0, 30)
+espButton.Position = UDim2.new(0, 10, 0, 80)
+espButton.Text = "ESP: OFF"
+espButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+espButton.TextColor3 = Color3.new(1,1,1)
+
+espButton.MouseButton1Click:Connect(function()
+    espOn = not espOn
+    espButton.Text = "ESP: " .. (espOn and "ON" or "OFF")
+    if espOn then
+        RunService.RenderStepped:Connect(function()
+            for _, plr in pairs(Players:GetPlayers()) do
+                if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("Head") then
+                    if not plr.Character.Head:FindFirstChild("ESP") then
+                        local gui = Instance.new("BillboardGui", plr.Character.Head)
+                        gui.Name = "ESP"
+                        gui.Size = UDim2.new(0, 100, 0, 30)
+                        gui.StudsOffset = Vector3.new(0, 2, 0)
+                        gui.AlwaysOnTop = true
+                        local label = Instance.new("TextLabel", gui)
+                        label.Size = UDim2.new(1, 0, 1, 0)
+                        label.BackgroundTransparency = 1
+                        label.Text = plr.Name
+                        label.TextScaled = true
+                        label.TextColor3 = (plr.Team == LocalPlayer.Team and Color3.fromRGB(0, 170, 255) or Color3.fromRGB(255, 0, 0))
+                    end
+                end
+            end
+        end)
+    else
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr.Character and plr.Character:FindFirstChild("Head") then
+                local tag = plr.Character.Head:FindFirstChild("ESP")
+                if tag then tag:Destroy() end
+            end
+        end
+    end
+end)
+
+-- Chat Bypasser
+local chatBypass = Instance.new("TextButton", frame)
+chatBypass.Size = UDim2.new(1, -20, 0, 30)
+chatBypass.Position = UDim2.new(0, 10, 0, 120)
+chatBypass.Text = "Chat Bypasser"
+chatBypass.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+chatBypass.TextColor3 = Color3.new(1,1,1)
+
+chatBypass.MouseButton1Click:Connect(function()
+    local message = "Digite sua mensagem no console."
+    print("[CHAT BYPASSER] Digite no console: say('sua_mensagem')")
+
+    _G.say = function(text)
+        if text and typeof(text) == "string" then
+            local safe = text:gsub("a", "𝗮"):gsub("e", "𝗲"):gsub("i", "𝗶"):gsub("o", "𝗼"):gsub("u", "𝘂")
+            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(safe, "All")
+        end
+    end
+end)
+
+-- Inf Stamina
+local staminaOn = false
+local staminaButton = Instance.new("TextButton", frame)
+staminaButton.Size = UDim2.new(1, -20, 0, 30)
+staminaButton.Position = UDim2.new(0, 10, 0, 160)
+staminaButton.Text = "Inf Stamina: OFF"
+staminaButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+staminaButton.TextColor3 = Color3.new(1,1,1)
+
+staminaButton.MouseButton1Click:Connect(function()
+    staminaOn = not staminaOn
+    staminaButton.Text = "Inf Stamina: " .. (staminaOn and "ON" or "OFF")
+
+    if staminaOn then
+        RunService.Stepped:Connect(function()
+            pcall(function()
+                local char = LocalPlayer.Character
+                for _, val in pairs(char:GetChildren()) do
+                    if val:IsA("NumberValue") and (val.Name:lower():find("stamina") or val.Name:lower():find("energy")) then
+                        val.Value = val.MaxValue or 100
+                    end
+                end
+            end)
+        end)
+    end
+end)
+
+-- Botão abrir/fechar
+toggle.MouseButton1Click:Connect(function()
+    frame.Visible = not frame.Visible
+    toggle.Text = frame.Visible and "Fechar Menu" or "Abrir Menu"
+end)
