@@ -1,4 +1,4 @@
-loadstring(game:HttpGet('https://raw.githubusercontent.com/wrestonbest/Helixia-2025/refs/heads/main/MPS/MPS%20Legacy.lua'))()
+loadstring(game:HttpGet(""))()
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
